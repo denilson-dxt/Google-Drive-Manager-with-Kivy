@@ -1,0 +1,307 @@
+<MainBox>:
+    orientation:"vertical"
+    canvas.before:
+        Color:
+            rgba: 1, 1, 1, .2
+        Rectangle:
+            size:self.size
+            pos:self.pos
+    Label:
+        canvas.before:
+            Color:
+                rgba: 1, 1, 1, .3
+            Rectangle:
+                pos:self.pos
+                size:self.size
+        text:"My Drive"
+        color:"black"
+        size_hint:1, .1
+    
+    Screens:
+
+
+
+<Screens>:
+    WelcomeScreen:
+        BoxLayout:
+            Label:
+                text:"Verificando dados de login"
+                color:"black"
+
+    ContentScreen:
+        BoxLayout:
+            id:main
+            orientation:"vertical"
+
+            TabbedPanel:
+                do_default_tab:False
+                canvas.before:
+                    Color:
+                        rgba:1, 1, 1, 1
+                    Rectangle:
+                        size:self.size
+                        pos:self.pos
+                canvas.before:
+                    Color:
+                        rgba:1, 1, 1, .2
+                    Rectangle:
+                        size:self.size
+                        pos:self.pos
+                TabbedPanelItem:
+                    background_color:1, 1, 1, 1
+                    text:"Ficheiros"
+                    id:files    
+                    BoxLayout:
+
+                        ScrollViewFiles:
+                            size_hint:.7, 1
+                            BoxLayout:
+                                size_hint_y:None
+                                height:self.minimum_height
+                                canvas.before:
+                                    Color:
+                                        rgba:1, 1, 1, 1
+                                    Rectangle:
+                                        size:self.size
+                                        pos:self.pos
+                                orientation:"vertical"
+                                id: files
+                                spacing:5
+                        BoxLayout:
+                            id: file_info
+                            orientation:"vertical"
+                            canvas.before:
+                                Color:
+                                    rgba:.1, .1, .1, 1
+                                Rectangle:
+                                    pos:self.pos
+                                    size:self.size
+                            size_hint:.3, 1
+                            Label:
+                                size_hint:1, .1
+                                text:"Informacoes do arquivo"
+                            FileInfo:
+                                id:fileinfo
+                        
+                TabbedPanelItem:
+                    text:"Upload"
+                    UploadMainWidget:
+                TabbedPanelItem:
+                    text:"Downloads"
+                    DownloadsWidget:
+                TabbedPanelItem:
+                    text:"Auto Backup"
+                    AutoBackupMainWidget:
+
+
+
+    UploadScreen:
+        name:"uploads"
+                    
+<LoginScreen>:
+    name: "login"
+
+
+<ContentScreen>:
+    name: "content"
+
+
+<ButtonOpt>:
+    color:"black"
+    size_hint_y:None
+    height:40
+
+<LabelFile>:
+    color:"black"
+    size_hint_y:None
+    height:40
+    text_size:self.size
+    halign:"left"
+    AsyncImage:
+        id:file_image
+        source:"blank.png"
+        size_hint:.05, 1
+
+
+<ScrollViewFiles>:
+
+
+<LabelFileText>:
+    
+    color:"black"
+    text_size:self.size
+    halign:"left"
+    size_hint:.8, 1
+    valign:"center"
+    
+
+<LabelCustumized@Label>:
+    size_hint:1, .175
+    text_size:self.size
+    halign:"left"
+    valign:"center"
+
+<FileInfo>:
+    size_hint:1, .9
+    orientation:"tb-lr"
+    id:fileinfo
+    LabelCustumized:
+        id:filename
+        text:self.parent.placeholder
+        
+    LabelCustumized:
+        id:file_owner
+        text:self.parent.placeholder
+    LabelCustumized:
+        id:create_date
+        text:self.parent.placeholder
+    
+    LabelCustumized:
+        id:modified_date
+        text:self.parent.placeholder
+    
+    LabelCustumized:
+        id:size
+        text:self.parent.placeholder
+    
+    
+    DownloadButton:
+        canvas.before:
+            Color:
+                rgba:1, 1, 1, .5
+            Rectangle:
+                pos:self.pos
+                size:self.size
+        text:"Baixar arquivo"
+    
+
+<MenuButtons>:
+
+    
+
+<UploadScreen>:
+<UploadMainWidget>:
+    BoxLayout:
+        orientation:"vertical"
+        size_hint:1, .3
+        Label:
+            text:"Faca upload de ficheiros"
+        MenuButtons:
+            text:"Selecionar arquivos"
+            on_press:self.parent.parent.openfilechooser()
+        Label:
+            text:"Lista de arquivos selecionados"    
+    FilesToUploadScrollView:
+        FilesToUploadList:
+
+    BoxLayout:
+        size_hint:1, .1
+        MenuButtons:
+            text:"Fazer upload dod arquivos"
+            on_press:self.parent.parent.upload_files()
+
+
+<UploadMainWidget>:
+    orientation: "vertical"
+
+<FilesToUploadScrollView>:
+    size_hint:1, .6
+
+<FilesToUploadList>:
+    orientation:"vertical"
+    size_hint:1, None
+    height:self.minimum_height
+
+
+<FileToUpload>:
+    size_hint:1, None
+    height:50
+    Label:
+        size_hint:.8, 1
+        text_size:self.size
+        halign:"left"
+        valign:"center"
+        id:text
+        text:"Desconhecido"
+    Label:
+        size_hint:.2, 1
+        text_size:self.size
+        halign:"left"
+        valign:"center"
+
+        id:size
+        text:"Desconhecido"
+    Label:
+        id:status
+        size_hint:.2, 1
+        text_size:self.size
+        halign:"left"
+        valign:"center"
+        text:"Desconhecido"
+    
+
+
+
+<DownloadsWidget>:
+    orientation:"vertical"
+    canvas.before:
+        Color:
+            rgba:1, 1, 1, .2
+        Rectangle:
+            pos:self.pos
+            size:self.size
+    Label:
+        size_hint:1, .05
+        text:"Lista de downloads"
+    ScrollDownloadList:
+
+
+
+<ListBox>:
+    orientation:"vertical"
+    size_hint:1, None
+    height:self.minimum_height
+
+
+<DownloadBox>:
+    size_hint:1, None
+    height:50
+    Label:
+        id:name
+        text:"placeholder"
+        text_size:self.size
+        halign:"left"
+        valign:"center"
+    Label:
+        id:status
+        text:"Em progresso"
+
+<FilechooserAuto>:
+
+<FileLabelAuto>:
+    text_size:self.size
+    halign:"left"
+    valign:"center"
+    size_hint:1, None
+    height:50
+
+<AutoBackupMainWidget>:
+    orientation:"vertical"
+
+<BoxBtn>:
+
+    size_hint:1, .1
+    orientation:"horizontal"
+    ButtonOpt:
+        text:"Adicionar ficheiros"
+        on_release:self.parent.parent.choose_files()
+    ButtonOpt:
+        text:"Pausar Backups"
+
+<ScrollAuto>:
+    size_hint:1, .8
+    BoxLayout:
+        size_hint:1, None
+        height:self.minimum_height
+        orientation:"vertical"
+
