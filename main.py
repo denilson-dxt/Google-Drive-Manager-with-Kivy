@@ -4,10 +4,8 @@ from kivy.uix.label import Label
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.screenmanager import Screen, ScreenManager
 from kivy.clock import Clock
-from kivy.uix.behaviors import FocusBehavior
-from  google_drive import DriveManager
+from google_drive import DriveManager
 import sys
-from kivy.core.window import Window
 from kivy.uix.scrollview import ScrollView
 from kivy.graphics import Rectangle, Color
 from kivy.properties import StringProperty, ListProperty
@@ -28,25 +26,16 @@ class WelcomeScreen(Screen):
 
     def on_enter(self):
         self.vrf = Clock.schedule_interval(self.verify_login, .2)
-        #self.drive = DriveManager()
-        #self.drive.func = "login"
-        #self.drive.start()
-
         self.drive = DriveManager()
         self.drive.func = "login"
         self.drive.start()
-        print(f"ola o rweu;tado {self.drive.service}")
 
     def verify_login(self, event):
-        #print(drive.proccessing)
         if not self.drive.proccessing:
             self.drive.novo = "Denny"
-            print("Terminou")
             self.vrf.cancel()
 
-            print(f"ola o rweu;tado {self.drive.service}")  
             self.parent.parent.drive = self.drive.service
-            print(self.parent.parent.drive)
 
             self.parent.current = "content"
 
@@ -60,25 +49,22 @@ class ContentScreen(Screen):
     
         self.vrf = Clock.schedule_interval(self.verify_files, .2)
 
-
     def on_leave(self):
-        print(self.children[0].children[0].children[1].children[0].clear_widgets())
+        self.children[0].children[0].children[1].children[0].clear_widgets()
 
     def verify_files(self, event):
         if not self.drive.proccessing:
-            print("Terminou de carregar os files")
             self.vrf.cancel()
-            print(f"Tamanho {len(self.drive.files)}")
             for file in self.drive.files:
                 label = LabelFile(file=file)
                 self.box.add_widget(label)
 
     def show_files(self, button):
-        print(self.parent)
         if button == "files":
             self.parent.current = "content"
         else:
             self.parent.current = "uploads"
+
 
 class FileInfo(StackLayout):
     def __init__(self, **kwargs):
@@ -94,9 +80,11 @@ class LoginScreen(Screen):
 class ButtonOpt(ButtonBehavior, Label):
     press_state = ListProperty([.5, .5, .8, 1])
     release_state = ListProperty([1, 1, 1, 1])
+
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.render()
+
     def render(self):
         self.canvas.before.clear()
         with self.canvas.before:
@@ -122,25 +110,18 @@ class ButtonOpt(ButtonBehavior, Label):
 class DownloadButton(ButtonOpt):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        
 
     def on_release(self, *args):
         super().on_release()
 
-        #self.service = self.parent.parent.parent.parent.parent.parent.parent.drive
         self.service = App.get_running_app().root.drive
-        
-        #self.drive = DriveManager(self.service, SELECTED_FILE)
-        #self.drive.func = "download"
-        #self.drive.start()
 
-        #self.vrf = Clock.schedule_interval(self.check_status, 0.3)
         self.list_box = App.get_running_app().root.children[0].children[0].children[0].children[0].tab_list[0].content.children[0].children[0]
-        print(self.list_box.check())
+        self.list_box.check()
 
     def check_status(self, event):
         if self.drive.proccessing:
-            print(self.drive.downloader)
+            pass
         else:
             self.vrf.cancel()
 
@@ -149,24 +130,19 @@ class MenuButtons(ButtonOpt):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
-    
-
 
 class LabelFile(ButtonBehavior, BoxLayout):
     text = StringProperty("sdadsad")
     cor = ListProperty([1,1,1,1])
     cor2 = ListProperty([.2, .2, .2, 1])
+
     def __init__(self, file, **kwargs):
         super().__init__(**kwargs)
         self.file = file
         self.label = LabelFileText(text=self.file["name"])
         self.add_widget(self.label)
         self.children[1].source = self.file["iconLink"]
-        #self.color="black"
-        #self.size_hint_y=None
-        #self.height=40
-        print(self.color)
-        #self.on_press = self.selectFile
+
         self.render()
 
     def on_press(self, *args):
@@ -179,8 +155,6 @@ class LabelFile(ButtonBehavior, BoxLayout):
             if child != self:
                 child.cor = 1, 1, 1,1 
                 child.cor2 = .2, .2, .2, 1
-        #print(App.get_running_app().root.children[0].children[0].children[0].children[0].children[0].children[0].children[0].children)
-        print(self.parent.parent.parent.children[0].children[0].ids)
         self.fileinfo_widget = self.parent.parent.parent.children[0].children[0]
         self.fileinfo_widget.ids.filename.text = f"Nome: {self.file['name']}"
         self.fileinfo_widget.ids.file_owner.text = f"Proprietario: {self.file['owners'][0]['displayName']}"
@@ -199,11 +173,8 @@ class LabelFile(ButtonBehavior, BoxLayout):
         except:
             self.fileinfo_widget.ids.size.text = f"Tamanho: desconhecido"
 
-        print(self.children[1].source)
-
     def on_release(self, *args):
         pass
-        #self.cor2, self.cor = self.cor, self.cor2
 
     def on_cor(self, *args):
         self.render()
@@ -219,8 +190,7 @@ class LabelFile(ButtonBehavior, BoxLayout):
         self.cor, self.cor2 = self.cor2, self.cor
         for child in self.parent.children:
             if child == self:
-                
-                print(self.label.text)        
+                pass
             else:
                 child.label.color = [1, 1, 1, 1]
     
@@ -261,9 +231,6 @@ class UploadScreen(Screen):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
-    def on_enter(self):
-        print("Entrando nos uploads")
-
 
 class UploadMainWidget(BoxLayout):
     def __init__(self, **kwargs):
@@ -275,7 +242,6 @@ class UploadMainWidget(BoxLayout):
     def upload_files(self):
         if len(self.files) > 0:
             for pos, file in enumerate(self.files):
-                print(f"Uploading {file}")
                 self.files[pos] = {f"name":file, "status": "None"}
             self.service = App.get_running_app().root.drive
             self.drive = DriveManager(self.service, files=self.files)
@@ -286,10 +252,10 @@ class UploadMainWidget(BoxLayout):
             modal = ModalView(size_hint=(None, None), width=300, height=50)
             modal.add_widget(Label(text="Seleciione arqivos para upload"))
             modal.open()
+
     def check_upload(self, event):
 
         for pos, file in enumerate(self.drive.files):
-            print(file["status"])
             self.files_boxs[pos].ids.status.text = file["status"]
         if not self.drive.proccessing:
             self.files = []
@@ -307,7 +273,6 @@ class UploadMainWidget(BoxLayout):
 
         self.modal.add_widget(self.file_widget)
 
-        #Buttons
         self.boxbtn = BoxLayout(size_hint=(.8, .1))
         self.addbtn = Button(text="Adicionar")
         self.addbtn.on_press = self.selectfiles
@@ -320,15 +285,12 @@ class UploadMainWidget(BoxLayout):
         self.file_widget.add_widget(self.boxbtn)
         self.modal.open()
 
-
     def closefilechooser(self):
         self.modal.dismiss()
 
-
     def selectfiles(self):
-        #print(f"Ficheiros selecionados {self.filec.selection}")
-        #self.modal.dismiss()
         self.filec.on_submit()
+
 
 class FilesToUploadScrollView(ScrollView):
     def __init__(self, **kwargs):
@@ -345,22 +307,13 @@ class FileChooserView(FileChooser):
         super().__init__(**kwargs)
         self.add_widget(FileChooserListLayout())
 
-
     def on_submit(self, *args):
-        
-        #print("Submetendo")
-        #print(self.selection)
-        #print(self.parent.parent.dismiss())
-        #print(App.get_running_app().root.children[0].children[0].children[0].children[0].children[0].children[0].children[1].children[0])
 
-        select_files = []
-        
-        
         list_widget = App.get_running_app().root.children[0].children[0].children[0].children[0].children[0].children[0].children[1].children[0]
         for file in self.selection:
             
             if not file in list_widget.parent.parent.files:
-                print(list_widget.parent.parent.files.append(file))
+                list_widget.parent.parent.files.append(file)
                 file_label = FileToUpload(file, self.get_nice_size(file))
                 list_widget.parent.parent.files_boxs.append(file_label)
                 list_widget.add_widget(file_label)
@@ -369,7 +322,6 @@ class FileChooserView(FileChooser):
 class FileToUpload(BoxLayout):
     def __init__(self,text, size, **kwargs):
         super().__init__(**kwargs)
-        print(self.ids.text)
         self.ids.text.text = os.path.split(text)[-1]
         self.ids.size.text = size
 
@@ -398,7 +350,6 @@ class ListBox(BoxLayout):
         self.files_to_download_list = []
     
     def check(self):
-        print(SELECTED_FILE)
         self.dw_box = DownloadBox(file=SELECTED_FILE, download=True)
         self.add_widget(self.dw_box)
 
@@ -462,17 +413,14 @@ class AutoBackupMainWidget(BoxLayout):
             if file["modification_date"] < os.path.getmtime(file["name"]):
                 self.files_to_backup.append({"name": file["name"], "status": "None"})
                 self.files[pos]["modification_date"] = os.path.getmtime(file["name"])
-                print("Arquivo modificado")
         with open("files.json", "w") as files_json:
             json.dump(self.files, files_json)
         if len(self.files_to_backup) != 0:
-            print(self.files_to_backup)
             self.service = App.get_running_app().root.drive
             self.drive = DriveManager(self.service, files=self.files_to_backup)
             self.drive.func = "upload"
             self.drive.start()
             self.files_to_backup = []
-            print(self.drive)
 
     def choose_files(self):
         self.modal = ModalView(size_hint=(.5, .5))
@@ -498,9 +446,7 @@ class AutoBackupMainWidget(BoxLayout):
         self.modal.open()
 
     def add_file_click(self, file, event2):
-        print(self.scrl.children)
         if file[0] not in self.files:
-            print(self.files)
             self.scrl.children[0].add_widget(FileLabelAuto(text=file[0]))
             self.files.append({"name": file[0], "modification_date": os.path.getmtime(file[0])})
         with open("files.json", "w") as files_json:

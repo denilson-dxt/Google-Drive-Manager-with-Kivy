@@ -35,7 +35,6 @@ class DriveManager(threading.Thread):
             self.download_file()
         elif self.func == "upload":
             self.upload_files()
-        print("Rodando")
 
     def login(self):
         self.proccessing = True
@@ -63,17 +62,11 @@ class DriveManager(threading.Thread):
         results = self.service.files().list(
              fields="files(id, name, owners, createdTime, modifiedTime, iconLink, size)", pageSize=70).execute()
         self.files = results.get("files", [])
-        for file in self.files:
-            try:
-                print(int(file["size"]) * 0.000001)
-            except:
-                print("OPa")
+
         self.proccessing = False
 
     def download_file(self):
         self.proccessing = True
-        print(f"Baixando o arquivo {self.file['filename']}")
-        print(f" Aqui esta o service que usamos{self.service}")
         request = self.service.files().get_media(fileId=self.file["file_id"])
         fh = io.BytesIO()
         
@@ -82,7 +75,6 @@ class DriveManager(threading.Thread):
         now = datetime.datetime.now()
         while done is False:
             self.status, done = self.downloader.next_chunk()
-            print(f"Download em {self.status.progress() * 100}%")
             with open(f"{now.year}{now.month}{now.day}{self.file['filename']}", "wb") as file:
                 file.write(fh.getbuffer())
         self.proccessing = False
@@ -94,6 +86,5 @@ class DriveManager(threading.Thread):
             file_metadata = {"name": os.path.split(file["name"])[-1]}
             media = MediaFileUpload(file["name"])
             file_upload = self.service.files().create(body=file_metadata, media_body=media, fields="id").execute()
-            print(file)
             self.files[pos]["status"] = "Done"
         self.proccessing = False
